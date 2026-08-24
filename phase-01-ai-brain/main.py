@@ -36,7 +36,7 @@ while True:
         ]
     )
 
-    print("AI:", response["message"]["content"])'''
+    print("AI:", response["message"]["content"])
 
 #Adding coservation memory
 
@@ -84,3 +84,144 @@ while True:
     )
 
     print("AI:", assistant_message)
+
+
+import ollama
+
+
+MODEL = "llama3.2:3b"
+
+messages = [
+    {
+        "role": "system",
+        "content": (
+            "You are my personal desktop AI assistant named ETERNITY. "
+            "Be helpful, clear, and concise. "
+            "Explain technical concepts in simple language. "
+            "Do not claim that you performed a computer action "
+            "unless a real tool actually performed it."
+        )
+    }
+]
+
+
+print("Personal AI Assistant")
+print("Type 'exit' to quit.\n")
+
+
+while True:
+    user_input = input("You: ").strip()
+
+    if not user_input:
+        continue
+
+    if user_input.lower() == "exit":
+        print("Goodbye!")
+        break
+
+    # Add the user's message to the conversation
+    messages.append(
+        {
+            "role": "user",
+            "content": user_input
+        }
+    )
+
+    try:
+        # Send the complete conversation to Ollama
+        response = ollama.chat(
+            model=MODEL,
+            messages=messages
+        )
+
+        # Extract the AI response
+        assistant_message = response["message"]["content"]
+
+        # Store the AI response in the conversation
+        messages.append(
+            {
+                "role": "assistant",
+                "content": assistant_message
+            }
+        )
+
+        print(f"AI: {assistant_message}\n")
+
+    except Exception as error:
+        print(f"Error: {error}\n")'''
+
+
+
+import ollama
+
+MODEL = "llama3.2:3b"
+
+messages = [
+    {
+        "role": "system",
+        "content": (
+            "You are my personal desktop AI assistant named ETERNITY. "
+            "Be helpful, clear, and concise. "
+            "Explain technical concepts in simple language. "
+            "Do not claim that you performed a computer action "
+            "unless a real tool actually performed it."
+        )
+    }
+]
+
+
+print("HI! I am ETERNITY, your personal AI assistant.")
+print("Type 'exit' to quit.\n")
+
+
+while True:
+    user_input = input("You: ").strip()
+
+    if not user_input:
+        continue
+
+    if user_input.lower() == "exit":
+        print("Goodbye!")
+        break
+
+    messages.append(
+        {
+            "role": "user",
+            "content": user_input
+        }
+    )
+
+    try:
+        print("AI: ", end="", flush=True)
+
+        response_stream = ollama.chat(
+            model=MODEL,
+            messages=messages,
+            stream=True
+        )
+
+        full_response = ""
+
+        for chunk in response_stream:
+            text = chunk["message"]["content"]
+
+            print(text, end="", flush=True)
+
+            full_response += text
+
+        print("\n")
+
+        messages.append(
+            {
+                "role": "assistant",
+                "content": full_response
+            }
+        )
+
+    except Exception as error:
+        print(f"\nError: {error}\n")
+    
+    
+    
+    
+     
