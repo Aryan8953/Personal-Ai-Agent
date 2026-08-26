@@ -39,6 +39,7 @@ class AIBrain:
                   }
                   
             )
+        
 
         except Exception as error:
             print(f"ERROR: {error}\n")

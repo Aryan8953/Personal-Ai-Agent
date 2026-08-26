@@ -454,12 +454,7 @@ def main():
 
         response = brain.chat(user_input)
 
-        if response is None:
-            print(
-                "AI: I couldn't connect to the local AI model.\n"
-            )
-        else:
-            print("\n")
+    
 
 
 if __name__ == "__main__":
