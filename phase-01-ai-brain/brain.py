@@ -39,7 +39,7 @@ class AIBrain:
                   }
                   
             )
-        
+            return full_response
 
         except Exception as error:
             print(f"ERROR: {error}\n")

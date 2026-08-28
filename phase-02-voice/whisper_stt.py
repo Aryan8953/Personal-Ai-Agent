@@ -1,7 +1,10 @@
 from faster_whisper import WhisperModel
-Model_SIZE="base"
 
-print("Loading whisper model...")
+
+MODEL_SIZE = "base"
+
+
+print("Loading Whisper model...")
 
 model = WhisperModel(
     MODEL_SIZE,
@@ -29,4 +32,4 @@ if __name__ == "__main__":
     result = transcribe("test.wav")
 
     print("Transcription:")
-    print(result)
+    print(result)          
