@@ -5,4 +5,6 @@ __pycache__/
 Thumbs.db
 .env
 Learning/
-git rm --cached "phase-02-voice/models/en_US-lessac-low.onnx"
+# AI model files
+*.onnx
+*.onnx.json
