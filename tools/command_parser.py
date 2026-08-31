@@ -1,12 +1,67 @@
 import re
 
 
+# ==========================================
+# Known websites
+# ==========================================
+
 WEBSITES = {
     "google": "https://www.google.com",
     "youtube": "https://www.youtube.com",
     "github": "https://github.com",
 }
 
+
+# ==========================================
+# Helpers
+# ==========================================
+
+def create_open_action(target):
+
+    target = target.strip()
+
+    if target.lower() in WEBSITES:
+
+        return {
+            "tool": "open_website",
+            "arguments": {
+                "url": WEBSITES[
+                    target.lower()
+                ]
+            }
+        }
+
+    return {
+        "tool": "launch_application",
+        "arguments": {
+            "application": target
+        }
+    }
+
+
+def create_type_action(text):
+
+    return {
+        "tool": "type_text",
+        "arguments": {
+            "text": text.strip()
+        }
+    }
+
+
+def create_press_action(key):
+
+    return {
+        "tool": "press_key",
+        "arguments": {
+            "key": key.strip()
+        }
+    }
+
+
+# ==========================================
+# Main parser
+# ==========================================
 
 def parse_command(user_input):
 
@@ -15,21 +70,17 @@ def parse_command(user_input):
     if not text:
         return None
 
-    actions = []
-
-    # ==========================================
-    # Normalize spaces
-    # ==========================================
-
+    # Normalize whitespace
     text = re.sub(
         r"\s+",
         " ",
         text
     ).strip()
 
-    # ==========================================
+
+    # ======================================
     # OPEN + TYPE + PRESS
-    # ==========================================
+    # ======================================
 
     match = re.match(
         r"^open\s+(.+?)\s+and\s+(?:type|write)\s+(.+?)\s+and\s+press\s+(.+)$",
@@ -39,50 +90,20 @@ def parse_command(user_input):
 
     if match:
 
-        target = match.group(1).strip()
-        typed_text = match.group(2).strip()
-        key = match.group(3).strip()
+        target = match.group(1)
+        typed_text = match.group(2)
+        key = match.group(3)
 
-        # Open application or website
-        if target.lower() in WEBSITES:
+        return [
+            create_open_action(target),
+            create_type_action(typed_text),
+            create_press_action(key)
+        ]
 
-            actions.append({
-                "tool": "open_website",
-                "arguments": {
-                    "url": WEBSITES[target.lower()]
-                }
-            })
 
-        else:
-
-            actions.append({
-                "tool": "launch_application",
-                "arguments": {
-                    "application": target
-                }
-            })
-
-        # Type
-        actions.append({
-            "tool": "type_text",
-            "arguments": {
-                "text": typed_text
-            }
-        })
-
-        # Press
-        actions.append({
-            "tool": "press_key",
-            "arguments": {
-                "key": key
-            }
-        })
-
-        return actions
-
-    # ==========================================
-    # OPEN + TYPE / WRITE
-    # ==========================================
+    # ======================================
+    # OPEN + TYPE
+    # ======================================
 
     match = re.match(
         r"^open\s+(.+?)\s+and\s+(?:type|write)\s+(.+)$",
@@ -92,41 +113,18 @@ def parse_command(user_input):
 
     if match:
 
-        target = match.group(1).strip()
-        typed_text = match.group(2).strip()
+        target = match.group(1)
+        typed_text = match.group(2)
 
-        # Open application or website
-        if target.lower() in WEBSITES:
+        return [
+            create_open_action(target),
+            create_type_action(typed_text)
+        ]
 
-            actions.append({
-                "tool": "open_website",
-                "arguments": {
-                    "url": WEBSITES[target.lower()]
-                }
-            })
 
-        else:
-
-            actions.append({
-                "tool": "launch_application",
-                "arguments": {
-                    "application": target
-                }
-            })
-
-        # Type
-        actions.append({
-            "tool": "type_text",
-            "arguments": {
-                "text": typed_text
-            }
-        })
-
-        return actions
-
-    # ==========================================
+    # ======================================
     # OPEN + PRESS
-    # ==========================================
+    # ======================================
 
     match = re.match(
         r"^open\s+(.+?)\s+and\s+press\s+(.+)$",
@@ -136,39 +134,18 @@ def parse_command(user_input):
 
     if match:
 
-        target = match.group(1).strip()
-        key = match.group(2).strip()
+        target = match.group(1)
+        key = match.group(2)
 
-        if target.lower() in WEBSITES:
+        return [
+            create_open_action(target),
+            create_press_action(key)
+        ]
 
-            actions.append({
-                "tool": "open_website",
-                "arguments": {
-                    "url": WEBSITES[target.lower()]
-                }
-            })
 
-        else:
-
-            actions.append({
-                "tool": "launch_application",
-                "arguments": {
-                    "application": target
-                }
-            })
-
-        actions.append({
-            "tool": "press_key",
-            "arguments": {
-                "key": key
-            }
-        })
-
-        return actions
-
-    # ==========================================
+    # ======================================
     # OPEN ONLY
-    # ==========================================
+    # ======================================
 
     match = re.match(
         r"^open\s+(.+)$",
@@ -178,27 +155,16 @@ def parse_command(user_input):
 
     if match:
 
-        target = match.group(1).strip()
+        target = match.group(1)
 
-        if target.lower() in WEBSITES:
+        return [
+            create_open_action(target)
+        ]
 
-            return [{
-                "tool": "open_website",
-                "arguments": {
-                    "url": WEBSITES[target.lower()]
-                }
-            }]
 
-        return [{
-            "tool": "launch_application",
-            "arguments": {
-                "application": target
-            }
-        }]
-
-    # ==========================================
+    # ======================================
     # TYPE / WRITE ONLY
-    # ==========================================
+    # ======================================
 
     match = re.match(
         r"^(?:type|write)\s+(.+)$",
@@ -208,16 +174,16 @@ def parse_command(user_input):
 
     if match:
 
-        return [{
-            "tool": "type_text",
-            "arguments": {
-                "text": match.group(1).strip()
-            }
-        }]
+        return [
+            create_type_action(
+                match.group(1)
+            )
+        ]
 
-    # ==========================================
+
+    # ======================================
     # PRESS ONLY
-    # ==========================================
+    # ======================================
 
     match = re.match(
         r"^press\s+(.+)$",
@@ -227,18 +193,22 @@ def parse_command(user_input):
 
     if match:
 
-        return [{
-            "tool": "press_key",
-            "arguments": {
-                "key": match.group(1).strip()
-            }
-        }]
+        return [
+            create_press_action(
+                match.group(1)
+            )
+        ]
+
+
+    # ======================================
+    # Not understood
+    # ======================================
 
     return None
 
 
 # ==========================================
-# TEST
+# Parser tests
 # ==========================================
 
 if __name__ == "__main__":
@@ -247,13 +217,7 @@ if __name__ == "__main__":
 
         "open notepad",
 
-        "open notepad and type hello",
-
-        "open notepad and type hello and press enter",
-
-        "type Personal AI Agent",
-
-        "press enter",
+        "open calculator",
 
         "open google",
 
@@ -261,17 +225,41 @@ if __name__ == "__main__":
 
         "open github",
 
+        "open notepad and type hello",
+
+        "open notepad and type hello and press enter",
+
+        "open notepad and press enter",
+
+        "type Personal AI Agent",
+
+        "write Hello World",
+
+        "press enter",
+
+        "what is Python?",
+
+        "tell me about artificial intelligence",
+
     ]
+
 
     for test in tests:
 
-        print("\n================================")
-
-        print("Input:")
-        print(test)
-
-        print("\nParsed:")
+        print(
+            "\n================================"
+        )
 
         print(
-            parse_command(test)
+            "Input:"
         )
+
+        print(test)
+
+        print(
+            "\nParsed:"
+        )
+
+        result = parse_command(test)
+
+        print(result)
