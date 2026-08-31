@@ -1,3 +1,4 @@
+import time
 import pyautogui
 
 
@@ -17,12 +18,18 @@ def click_mouse(button="left"):
     if button not in ["left", "right", "middle"]:
         return f"Unsupported mouse button: {button}"
 
-    pyautogui.click(button=button)
+    pyautogui.click(
+        button=button
+    )
 
     return f"Clicked {button} mouse button."
 
 
 def type_text(text):
+
+    # Give newly opened applications time
+    # to receive keyboard focus.
+    time.sleep(1)
 
     pyautogui.write(
         str(text),
@@ -34,6 +41,10 @@ def type_text(text):
 
 def press_key(key):
 
-    pyautogui.press(str(key))
+    time.sleep(0.2)
+
+    pyautogui.press(
+        str(key)
+    )
 
     return f"Pressed {key}."

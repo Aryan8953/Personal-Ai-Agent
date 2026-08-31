@@ -15,9 +15,14 @@ sys.path.insert(0, str(PHASE_01_PATH))
 sys.path.insert(0, str(TOOLS_PATH))
 
 
+# ==========================================
+# Imports
+# ==========================================
+
 from brain import AIBrain
 
 from ai_tool_router import route_request
+from command_parser import parse_command
 from tool_executor import execute_tool
 
 
@@ -25,129 +30,97 @@ MAX_STEPS = 5
 
 
 # ==========================================
-# Convert tool result into final answer
+# Helpers
 # ==========================================
 
-def create_final_answer(
-    brain,
-    user_request,
-    tool_name,
-    result
-):
+def tool_result_failed(result):
 
-    if tool_name == "inspect_screen":
+    if not isinstance(result, str):
+        return False
 
-        prompt = f"""
-The user asked:
+    failure_words = [
+        "failed",
+        "blocked",
+        "can't",
+        "cannot",
+        "error",
+        "unknown tool"
+    ]
 
-{user_request}
+    result_lower = result.lower()
 
-Information obtained from the user's screen:
-
-{result}
-
-Answer the user's original question directly.
-
-Important:
-- Use the screen information as evidence.
-- Do not perform another action.
-- Do not suggest opening or launching anything.
-- Do not mention internal tools.
-- If the screen information is uncertain, say so.
-"""
-
-    elif tool_name == "search_web":
-
-        prompt = f"""
-The user asked:
-
-{user_request}
-
-Internet search results:
-
-{result}
-
-Answer the user's original question using the
-search results.
-
-Important:
-- Do not perform another tool action.
-- Do not mention internal tools.
-- Do not invent unsupported information.
-"""
-
-    else:
-
-        return str(result)
-
-    return brain.chat(prompt)
-
-
-# ==========================================
-# Run task
-# ==========================================
-
-def run_task(user_request):
-
-    brain = AIBrain()
-
-    decision = route_request(
-        user_request
+    return any(
+        word in result_lower
+        for word in failure_words
     )
 
-    print("\n========== STEP 1 ==========")
 
-    print("Decision:")
-    print(decision)
+# ==========================================
+# Execute a validated plan
+# ==========================================
 
-    # ======================================
-    # Normal question
-    # ======================================
+def execute_plan(plan):
 
-    if decision.get("action") == "NORMAL":
-
-        return brain.chat(
-            user_request
-        )
-
-    executed_actions = set()
-
-    current_decision = decision
+    if not plan:
+        return []
 
     # ======================================
-    # Controlled tool loop
+    # Validate complete plan BEFORE execution
     # ======================================
 
-    for step in range(1, MAX_STEPS + 1):
+    required_fields = {
+        "tool",
+        "arguments"
+    }
 
-        if step > 1:
+    for step in plan:
+
+        if not isinstance(step, dict):
 
             print(
-                f"\n========== STEP {step} =========="
+                "🛑 Invalid action detected."
             )
+
+            return []
+
+        if not required_fields.issubset(
+            step.keys()
+        ):
 
             print(
-                "Decision:"
+                "🛑 Incomplete action detected."
             )
+
+            return []
+
+        if not isinstance(
+            step["arguments"],
+            dict
+        ):
 
             print(
-                current_decision
+                "🛑 Invalid arguments detected."
             )
 
-        if current_decision.get("action") != "TOOL":
+            return []
 
-            return current_decision.get(
-                "response",
-                "Task completed."
-            )
+    # ======================================
+    # Execute actions
+    # ======================================
 
-        tool_name = current_decision.get(
-            "tool"
-        )
+    executed = []
 
-        arguments = current_decision.get(
-            "arguments",
-            {}
+    for index, step in enumerate(
+        plan,
+        start=1
+    ):
+
+        tool_name = step["tool"]
+
+        arguments = step["arguments"]
+
+        print(
+            f"\n========== ACTION {index} =========="
         )
 
         print(
@@ -159,31 +132,7 @@ def run_task(user_request):
         )
 
         # ==================================
-        # Prevent duplicate actions
-        # ==================================
-
-        action_key = (
-            tool_name,
-            str(arguments)
-        )
-
-        if action_key in executed_actions:
-
-            print(
-                "🛑 Duplicate action blocked."
-            )
-
-            return (
-                "I stopped because the same "
-                "action was requested again."
-            )
-
-        executed_actions.add(
-            action_key
-        )
-
-        # ==================================
-        # Execute safely
+        # Execute through safety layer
         # ==================================
 
         result = execute_tool(
@@ -195,58 +144,253 @@ def run_task(user_request):
             f"💻 Result: {result}"
         )
 
+        executed.append(
+            {
+                "tool": tool_name,
+                "arguments": arguments,
+                "result": result
+            }
+        )
+
         # ==================================
-        # Vision
+        # Stop immediately on failure
         # ==================================
 
-        if tool_name == "inspect_screen":
+        if tool_result_failed(result):
 
-            return create_final_answer(
-                brain,
-                user_request,
-                tool_name,
-                result
+            print(
+                "🛑 Action failed. Stopping."
             )
 
-        # ==================================
-        # Web search
-        # ==================================
+            break
 
-        if tool_name == "search_web":
+    return executed
 
-            return create_final_answer(
-                brain,
-                user_request,
-                tool_name,
-                result
+
+# ==========================================
+# Final answer for vision
+# ==========================================
+
+def answer_from_vision(
+    brain,
+    user_request,
+    result
+):
+
+    prompt = f"""
+The user asked:
+
+{user_request}
+
+Information obtained from the user's screen:
+
+{result}
+
+Answer the user's original question directly.
+
+Rules:
+
+- Use the screen information as evidence.
+- Do not perform another computer action.
+- Do not suggest launching an application.
+- Do not mention internal tools.
+- If the visual information is uncertain, say so.
+"""
+
+    return brain.chat(
+        prompt
+    )
+
+
+# ==========================================
+# Final answer for web search
+# ==========================================
+
+def answer_from_web(
+    brain,
+    user_request,
+    result
+):
+
+    prompt = f"""
+The user asked:
+
+{user_request}
+
+Internet search results:
+
+{result}
+
+Answer the user's original question using
+the search results.
+
+Rules:
+
+- Do not perform another tool action.
+- Do not mention internal tools.
+- Do not invent unsupported information.
+"""
+
+    return brain.chat(
+        prompt
+    )
+
+
+# ==========================================
+# Main task runner
+# ==========================================
+
+def run_task(user_request):
+
+    brain = AIBrain()
+
+    # ======================================
+    # STEP 1
+    # Deterministic command parser
+    # ======================================
+
+    parsed_plan = parse_command(
+        user_request
+    )
+
+    if parsed_plan:
+
+        print(
+            "\n🧩 Deterministic command detected."
+        )
+
+        results = execute_plan(
+            parsed_plan
+        )
+
+        if not results:
+
+            return (
+                "I couldn't execute "
+                "the requested task."
             )
 
-        # ==================================
-        # One-shot computer actions
-        # ==================================
+        # Check last action
+        last_result = results[-1]["result"]
 
-        if tool_name in {
-            "launch_application",
-            "open_website",
-            "move_mouse",
-            "click_mouse",
-            "click_at",
-            "type_text",
-            "press_key"
-        }:
+        if tool_result_failed(
+            last_result
+        ):
 
-            return str(result)
+            return str(last_result)
 
-        # ==================================
-        # Unknown tool
-        # ==================================
+        return (
+            f"Done. Executed "
+            f"{len(results)} action(s)."
+        )
+
+    # ======================================
+    # STEP 2
+    # AI router
+    # ======================================
+
+    decision = route_request(
+        user_request
+    )
+
+    print(
+        "\n========== ROUTER =========="
+    )
+
+    print(
+        decision
+    )
+
+    # ======================================
+    # NORMAL
+    # ======================================
+
+    if decision.get(
+        "action"
+    ) == "NORMAL":
+
+        return brain.chat(
+            user_request
+        )
+
+    # ======================================
+    # TOOL
+    # ======================================
+
+    tool_name = decision.get(
+        "tool"
+    )
+
+    arguments = decision.get(
+        "arguments",
+        {}
+    )
+
+    if not tool_name:
+
+        return (
+            "I couldn't determine "
+            "which action to perform."
+        )
+
+    print(
+        f"\n🛠️ Tool: {tool_name}"
+    )
+
+    print(
+        f"📦 Arguments: {arguments}"
+    )
+
+    # ======================================
+    # Execute through safety layer
+    # ======================================
+
+    result = execute_tool(
+        tool_name,
+        arguments
+    )
+
+    print(
+        f"💻 Result: {result}"
+    )
+
+    # ======================================
+    # Check failure
+    # ======================================
+
+    if tool_result_failed(result):
 
         return str(result)
 
-    return (
-        "The task reached the maximum "
-        "number of allowed steps."
-    )
+    # ======================================
+    # Vision result
+    # ======================================
+
+    if tool_name == "inspect_screen":
+
+        return answer_from_vision(
+            brain,
+            user_request,
+            result
+        )
+
+    # ======================================
+    # Web result
+    # ======================================
+
+    if tool_name == "search_web":
+
+        return answer_from_web(
+            brain,
+            user_request,
+            result
+        )
+
+    # ======================================
+    # One-shot computer action
+    # ======================================
+
+    return str(result)
 
 
 # ==========================================
@@ -256,16 +400,11 @@ def run_task(user_request):
 def main():
 
     print("================================")
-    print("       Multi-Step Agent")
+    print("       Personal AI Agent")
     print("================================")
 
     print(
-        "Controlled tool execution"
-    )
-
-    print(
-        "Maximum steps:",
-        MAX_STEPS
+        "Controlled computer execution"
     )
 
     print(
@@ -280,11 +419,14 @@ def main():
 
         if request.lower() == "exit":
 
-            print("Goodbye!")
+            print(
+                "Goodbye!"
+            )
 
             break
 
         if not request:
+
             continue
 
         try:
@@ -307,6 +449,10 @@ def main():
                 f"\n❌ Error: {error}"
             )
 
+
+# ==========================================
+# Entry point
+# ==========================================
 
 if __name__ == "__main__":
 
