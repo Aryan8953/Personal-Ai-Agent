@@ -8,3 +8,4 @@ Learning/
 # AI model files
 *.onnx
 *.onnx.json
+phase-03-vision/*.png
