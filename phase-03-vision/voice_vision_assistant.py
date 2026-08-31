@@ -76,36 +76,17 @@ def listen():
 
 
 # ==============================
-# Tool handling
+# Tool → AI response
 # ==============================
 
-def handle_tool_request(
+def process_tool_result(
     user_input,
-    decision,
+    tool_name,
+    result,
     brain
 ):
 
-    tool_name = decision.get("tool")
-
-    arguments = decision.get(
-        "arguments",
-        {}
-    )
-
-    print(f"\n🛠️ Tool: {tool_name}")
-    print(f"📦 Arguments: {arguments}")
-
-    result = execute_tool(
-        tool_name,
-        arguments
-    )
-
-    print(f"💻 Result: {result}")
-
-    # If the tool was screen inspection,
-    # let the main AI turn the visual result
-    # into a natural answer.
-
+    # Vision result
     if tool_name == "inspect_screen":
 
         prompt = f"""
@@ -113,25 +94,48 @@ The user asked:
 
 {user_input}
 
-The following information was obtained
-from the user's current screen:
+Information obtained from the user's screen:
 
 {result}
 
-Answer the user's question naturally and directly.
+Answer naturally and directly.
 
-Do not mention internal tools, tool execution,
-screenshots, or model names unless the user
-specifically asks about them.
+Do not mention internal tools, screenshots,
+or model names unless the user asks.
 """
 
         return brain.chat(prompt)
 
+    # Web result
+    if tool_name == "search_web":
+
+        prompt = f"""
+The user asked:
+
+{user_input}
+
+Internet search results:
+
+{result}
+
+Answer naturally and accurately.
+
+Rules:
+
+- Use the search results for current information.
+- Do not invent unsupported facts.
+- If the results are insufficient, say so.
+- Do not mention internal tools unless asked.
+"""
+
+        return brain.chat(prompt)
+
+    # Computer/system tools
     return result
 
 
 # ==============================
-# Main Assistant
+# Main assistant
 # ==============================
 
 def main():
@@ -139,9 +143,9 @@ def main():
     brain = AIBrain()
 
     print("================================")
-    print("   Personal Vision Assistant")
+    print("     Personal AI Assistant")
     print("================================")
-    print("Voice + AI + Vision + Tools + Piper")
+    print("Voice + AI + Vision + Web + Tools")
     print("Say 'exit' to stop.\n")
 
     while True:
@@ -151,56 +155,90 @@ def main():
         if not text:
             continue
 
-        print(f"You: {text}")
+        print(f"\nYou: {text}")
 
         if text.lower().strip() == "exit":
 
             print("Goodbye!")
+
             break
 
         # ==========================
-        # AI Tool Router
+        # AI decides what to do
         # ==========================
 
         try:
 
             decision = route_request(text)
 
+            print(
+                f"\n🧠 Decision: {decision}"
+            )
+
         except Exception as error:
 
-            print(f"\nRouter error: {error}")
+            print(
+                f"\n❌ Router error: {error}"
+            )
 
             decision = {
                 "action": "NORMAL"
             }
 
         # ==========================
-        # Tool request
+        # NORMAL
         # ==========================
 
-        if decision.get("action") == "TOOL":
-
-            response = handle_tool_request(
-                text,
-                decision,
-                brain
-            )
-
-        # ==========================
-        # Normal conversation
-        # ==========================
-
-        else:
+        if decision.get("action") == "NORMAL":
 
             response = brain.chat(text)
 
         # ==========================
-        # Speak response
+        # TOOL
+        # ==========================
+
+        else:
+
+            tool_name = decision.get("tool")
+
+            arguments = decision.get(
+                "arguments",
+                {}
+            )
+
+            print(
+                f"🛠️ Tool: {tool_name}"
+            )
+
+            print(
+                f"📦 Arguments: {arguments}"
+            )
+
+            result = execute_tool(
+                tool_name,
+                arguments
+            )
+
+            print(
+                f"\n💻 Tool result:\n{result}"
+            )
+
+            response = process_tool_result(
+                text,
+                tool_name,
+                result,
+                brain
+            )
+
+        # ==========================
+        # Response
         # ==========================
 
         if response:
 
-            print(f"\nAI: {response}")
+            print(
+                f"\nAI: {response}"
+            )
 
             speak(response)
 

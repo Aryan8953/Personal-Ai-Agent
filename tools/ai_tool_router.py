@@ -30,6 +30,9 @@ IMPORTANT RULES:
 7. Do NOT use click_at unless the user explicitly asks to click
    a specific location or target.
 8. Do not execute any tools yourself.
+9. Use search_web when the user asks for current,latest, recent, live, or internet-based information.
+10. search_web requires a "query" argument.
+11. Do not use search_web for ordinary questions that can be answered reliably without current information.
 
 For a normal conversational question:
 
@@ -48,6 +51,20 @@ For a computer action:
 }}
 
 Examples:
+
+User:
+"What is the latest Python version?"
+
+Return:
+
+{{
+    "action": "TOOL",
+    "tool": "search_web",
+    "arguments": {{
+        "query": "latest Python version",
+        "max_results": 5
+    }}
+}}
 
 User:
 "What application am I using?"

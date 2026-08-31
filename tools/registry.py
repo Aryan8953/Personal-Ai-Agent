@@ -1,5 +1,7 @@
 from vision_tools import inspect_screen, click_at
 
+from web_tools import search_web
+
 from system_tools import (
     launch_application,
     open_website
@@ -30,6 +32,8 @@ TOOLS = {
     "inspect_screen": inspect_screen,
 
     "click_at": click_at,
+
+    "search_web": search_web,
 
 }
 
@@ -92,8 +96,15 @@ TOOL_DESCRIPTIONS = {
             "x": "Horizontal screen coordinate",
             "y": "Vertical screen coordinate"
         }
-    }
+    },
 
+    "search_web": {
+        "description": "Search the internet for current information.",
+        "arguments": {
+            "query": "The search query",
+            "max_results": "Maximum number of results"
+        }
+    }
 }
 
 

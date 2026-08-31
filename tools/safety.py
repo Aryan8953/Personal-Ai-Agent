@@ -6,6 +6,7 @@ ALLOWED_TOOLS = {
     "type_text",
     "press_key",
     "inspect_screen",
+    "search_web",
 }
 
 
