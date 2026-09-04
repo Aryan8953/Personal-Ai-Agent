@@ -1,0 +1,2235 @@
+/* =========================================================
+   ETERNITY — COSMIC AI INTERFACE
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  background: #03030a;
+  color: #eeeeF5;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  overscroll-behavior: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+button:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+}
+
+/* =========================================================
+   MAIN APP
+   ========================================================= */
+
+.eternity-app {
+  position: fixed;
+  inset: 0;
+
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+
+  display: grid;
+
+  grid-template-columns:
+    235px
+    minmax(0, 1fr)
+    270px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 42%,
+      rgba(83, 45, 185, 0.14),
+      transparent 28%
+    ),
+    radial-gradient(
+      ellipse at 68% 30%,
+      rgba(34, 67, 160, 0.10),
+      transparent 32%
+    ),
+    radial-gradient(
+      ellipse at 30% 70%,
+      rgba(70, 30, 150, 0.07),
+      transparent 30%
+    ),
+    #03030a;
+}
+
+/* subtle star field */
+
+.eternity-app::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.55;
+
+  background-image:
+    radial-gradient(
+      1px 1px at 12% 18%,
+      rgba(255,255,255,0.55),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 27% 73%,
+      rgba(255,255,255,0.35),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 44% 15%,
+      rgba(255,255,255,0.4),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 68% 78%,
+      rgba(255,255,255,0.3),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 87% 27%,
+      rgba(255,255,255,0.45),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 78% 54%,
+      rgba(255,255,255,0.28),
+      transparent
+    );
+
+  z-index: 0;
+}
+
+/* =========================================================
+   LEFT SIDEBAR
+   ========================================================= */
+
+.left-sidebar {
+  position: relative;
+  z-index: 10;
+
+  height: 100vh;
+  height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border-right:
+    1px solid rgba(255,255,255,0.065);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(7,7,16,0.97),
+      rgba(3,3,10,0.98)
+    );
+
+  backdrop-filter: blur(20px);
+}
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.logo-area {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding:
+    23px
+    18px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,0.045);
+}
+
+.logo-mark {
+  width: 31px;
+  height: 31px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid rgba(148,112,255,0.45);
+
+  border-radius: 9px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(112,74,220,0.25),
+      rgba(20,15,42,0.65)
+    );
+
+  color: #e9e4ff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  box-shadow:
+    0 0 20px rgba(105,70,220,0.18);
+}
+
+.logo-name {
+  color: #eeeef5;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  letter-spacing: 1.5px;
+}
+
+/* =========================================================
+   NEW CHAT
+   ========================================================= */
+
+.new-chat-button {
+  margin:
+    16px
+    14px
+    10px;
+
+  padding:
+    11px
+    13px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  border:
+    1px solid rgba(125,85,230,0.4);
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(91,56,180,0.16),
+      rgba(30,20,70,0.16)
+    );
+
+  color: #e5e1f3;
+
+  font-size: 13px;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    0.2s ease;
+}
+
+.new-chat-button:hover {
+  border-color:
+    rgba(159,124,255,0.65);
+
+  background:
+    rgba(95,60,190,0.22);
+
+  box-shadow:
+    0 0 25px rgba(93,57,190,0.12);
+}
+
+.new-chat-button span {
+  color: #b7a5ee;
+
+  font-size: 18px;
+}
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.sidebar-search {
+  margin:
+    0
+    14px
+    22px;
+
+  padding:
+    9px
+    10px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  border:
+    1px solid rgba(255,255,255,0.065);
+
+  border-radius: 8px;
+
+  background:
+    rgba(255,255,255,0.025);
+}
+
+.sidebar-search span {
+  color: #747482;
+
+  font-size: 15px;
+}
+
+.sidebar-search input {
+  width: 100%;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #dddde5;
+
+  font-size: 12px;
+}
+
+.sidebar-search input::placeholder {
+  color: #60606c;
+}
+
+/* =========================================================
+   HISTORY
+   ========================================================= */
+
+.sidebar-section-title {
+  padding:
+    0
+    16px
+    9px;
+
+  color: #686875;
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+  letter-spacing: 1.3px;
+
+  text-transform: uppercase;
+}
+
+.history-list {
+  padding:
+    0
+    9px;
+
+  overflow-y: auto;
+}
+
+.history-button {
+  width: 100%;
+
+  display: flex;
+
+  gap: 9px;
+
+  padding:
+    9px
+    8px;
+
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #aaaab7;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    0.2s ease;
+}
+
+.history-button:hover {
+  background:
+    rgba(111,73,207,0.08);
+
+  color: #e4e2ed;
+}
+
+.history-dot {
+  color: #7362a5;
+}
+
+.history-info {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+
+  font-size: 12px;
+}
+
+.history-info small {
+  margin-top: 3px;
+
+  color: #5f5f6b;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   SIDEBAR BOTTOM
+   ========================================================= */
+
+.sidebar-bottom {
+  margin-top: auto;
+
+  padding:
+    14px
+    17px;
+
+  border-top:
+    1px solid rgba(255,255,255,0.045);
+}
+
+.connection {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #92929d;
+
+  font-size: 11px;
+}
+
+.connection-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #987bff;
+
+  box-shadow:
+    0 0 8px rgba(152,123,255,0.7);
+}
+
+.sidebar-version {
+  margin-top: 7px;
+
+  color: #50505b;
+
+  font-size: 9px;
+
+  letter-spacing: 1.3px;
+}
+
+/* =========================================================
+   MAIN WORKSPACE
+   ========================================================= */
+
+.workspace {
+  position: relative;
+  z-index: 5;
+
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(86,48,190,0.07),
+      transparent 35%
+    );
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.workspace-header {
+  height: 64px;
+
+  flex: 0 0 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding:
+    0
+    25px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,0.05);
+
+  background:
+    rgba(3,3,10,0.45);
+
+  backdrop-filter: blur(14px);
+}
+
+.workspace-title {
+  color: #eeeeF4;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  letter-spacing: 0.3px;
+}
+
+.workspace-subtitle {
+  margin-top: 3px;
+
+  color: #666675;
+
+  font-size: 10px;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #777783;
+
+  font-size: 11px;
+}
+
+.header-status span {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #9277ed;
+
+  box-shadow:
+    0 0 9px rgba(146,119,237,0.8);
+}
+
+/* =========================================================
+   CHAT
+   ========================================================= */
+
+.chat-area {
+  position: relative;
+
+  flex: 1;
+
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+  position: absolute;
+
+  left: 50%;
+  top: 46%;
+
+  width: 650px;
+  max-width: 85%;
+
+  transform:
+    translate(-50%, -50%);
+
+  text-align: center;
+}
+
+/* =========================================================
+   MINIMAL COSMIC LOGO
+   ========================================================= */
+
+.minimal-logo {
+  position: relative;
+
+  width: 76px;
+  height: 76px;
+
+  margin:
+    0
+    auto
+    26px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      #020207 0%,
+      #010106 52%,
+      transparent 54%
+    );
+
+  color: #eeeaff;
+
+  font-size: 19px;
+
+  box-shadow:
+    0 0 0 1px rgba(135,100,240,0.35),
+    0 0 25px rgba(113,76,225,0.3),
+    0 0 60px rgba(84,51,180,0.17);
+}
+
+.minimal-logo::before,
+.minimal-logo::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  border-radius: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  pointer-events: none;
+}
+
+.minimal-logo::before {
+  width: 105px;
+  height: 42px;
+
+  border:
+    1px solid rgba(137,101,245,0.55);
+
+  transform:
+    translate(-50%, -50%)
+    rotate(-18deg);
+
+  box-shadow:
+    0 0 15px rgba(112,76,225,0.18);
+}
+
+.minimal-logo::after {
+  width: 115px;
+  height: 48px;
+
+  border:
+    1px solid rgba(74,102,235,0.3);
+
+  transform:
+    translate(-50%, -50%)
+    rotate(25deg);
+}
+
+.empty-state h1 {
+  margin:
+    0
+    0
+    11px;
+
+  color: #f1f0f5;
+
+  font-size: 34px;
+
+  font-weight: 450;
+
+  letter-spacing: -1.2px;
+}
+
+.empty-state p {
+  margin: 0;
+
+  color: #767681;
+
+  font-size: 13px;
+}
+
+/* =========================================================
+   MESSAGES
+   ========================================================= */
+
+.message-list {
+  width: min(850px, 90%);
+
+  margin:
+    0
+    auto;
+
+  padding:
+    30px
+    0
+    150px;
+}
+
+.chat-message {
+  display: flex;
+
+  gap: 12px;
+
+  margin-bottom: 27px;
+}
+
+.message-avatar {
+  flex: 0 0 30px;
+
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid rgba(131,96,225,0.3);
+
+  border-radius: 8px;
+
+  background:
+    rgba(73,47,142,0.12);
+
+  color: #aaa0d0;
+
+  font-size: 10px;
+}
+
+.message-body {
+  min-width: 0;
+
+  max-width: 720px;
+}
+
+.message-author {
+  margin-bottom: 6px;
+
+  color: #777784;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.8px;
+}
+
+.message-content {
+  color: #d9d9e0;
+
+  font-size: 14px;
+
+  line-height: 1.65;
+
+  overflow-wrap: anywhere;
+}
+
+.user-message .message-avatar {
+  border-color:
+    rgba(255,255,255,0.12);
+
+  background:
+    rgba(255,255,255,0.035);
+
+  color: #a7a7b0;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.loading-dots {
+  display: flex;
+
+  gap: 4px;
+
+  padding-top: 5px;
+}
+
+.loading-dots span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #8d78c6;
+
+  animation:
+    cosmicPulse 1.2s infinite;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes cosmicPulse {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   COMPOSER
+   ========================================================= */
+
+.composer-wrapper {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  padding:
+    0
+    7%
+    18px;
+
+  background:
+    linear-gradient(
+      to top,
+      #03030a 42%,
+      rgba(3,3,10,0.9) 65%,
+      transparent
+    );
+
+  z-index: 20;
+}
+
+.composer {
+  width: min(850px, 100%);
+
+  margin:
+    0
+    auto;
+
+  display: flex;
+  align-items: flex-end;
+
+  gap: 8px;
+
+  padding:
+    8px
+    9px;
+
+  border:
+    1px solid rgba(132,97,226,0.22);
+
+  border-radius: 13px;
+
+  background:
+    rgba(12,12,20,0.88);
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,0.4),
+    0 0 30px rgba(83,48,170,0.06);
+
+  backdrop-filter: blur(16px);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.composer:focus-within {
+  border-color:
+    rgba(137,104,230,0.45);
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,0.4),
+    0 0 35px rgba(89,54,180,0.1);
+}
+
+.composer textarea {
+  flex: 1;
+
+  min-width: 0;
+
+  min-height: 38px;
+  max-height: 160px;
+
+  padding:
+    9px
+    5px;
+
+  resize: none;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #e7e7ec;
+
+  font-size: 14px;
+
+  line-height: 1.45;
+}
+
+.composer textarea::placeholder {
+  color: #64646e;
+}
+
+.composer-actions {
+  display: flex;
+
+  gap: 5px;
+}
+
+.composer-button,
+.send-button {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  border-radius: 8px;
+
+  background:
+    rgba(255,255,255,0.035);
+
+  color: #92929d;
+
+  cursor: pointer;
+
+  transition:
+    0.2s ease;
+}
+
+.composer-button:hover,
+.send-button:hover {
+  border-color:
+    rgba(142,106,238,0.35);
+
+  background:
+    rgba(113,76,213,0.13);
+
+  color: #e4dfff;
+}
+
+.composer-button.active {
+  border-color:
+    rgba(151,115,247,0.5);
+
+  background:
+    rgba(116,78,214,0.2);
+
+  color: #eee9ff;
+
+  box-shadow:
+    0 0 15px rgba(117,78,215,0.2);
+}
+
+.composer-button:disabled,
+.send-button:disabled {
+  opacity: 0.3;
+
+  cursor: default;
+}
+
+.send-button {
+  font-size: 18px;
+}
+
+.composer-note {
+  width: min(850px, 100%);
+
+  margin:
+    6px
+    auto
+    0;
+
+  text-align: center;
+
+  color: #50505b;
+
+  font-size: 9px;
+}
+
+/* =========================================================
+   RIGHT SIDEBAR
+   ========================================================= */
+
+.right-sidebar {
+  position: relative;
+  z-index: 10;
+
+  width: 270px;
+
+  height: 100vh;
+  height: 100dvh;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding:
+    24px
+    15px;
+
+  border-left:
+    1px solid rgba(255,255,255,0.06);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(7,7,16,0.97),
+      rgba(3,3,10,0.98)
+    );
+
+  backdrop-filter: blur(20px);
+}
+
+.right-heading {
+  margin:
+    0
+    0
+    27px;
+
+  color: #dedde5;
+
+  font-size: 13px;
+
+  font-weight: 500;
+}
+
+/* =========================================================
+   PANEL SECTIONS
+   ========================================================= */
+
+.panel-section {
+  margin-bottom: 28px;
+}
+
+.section-label {
+  margin-bottom: 11px;
+
+  color: #676773;
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+  letter-spacing: 1.2px;
+
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   SYSTEM
+   ========================================================= */
+
+.system-list {
+  padding:
+    13px;
+
+  border:
+    1px solid rgba(137,100,232,0.12);
+
+  border-radius: 10px;
+
+  background:
+    rgba(255,255,255,0.025);
+}
+
+.system-item {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 13px;
+
+  color: #858590;
+
+  font-size: 11px;
+}
+
+.system-item:last-child {
+  margin-bottom: 0;
+}
+
+.system-item strong {
+  color: #aaa0ca;
+
+  font-size: 10px;
+
+  font-weight: 500;
+
+  text-align: right;
+}
+
+/* =========================================================
+   TOOLS
+   ========================================================= */
+
+.tool-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+.tool-button {
+  width: 100%;
+
+  min-height: 39px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding:
+    8px
+    10px;
+
+  border:
+    1px solid transparent;
+
+  border-radius: 8px;
+
+  background:
+    rgba(255,255,255,0.018);
+
+  color: #9797a2;
+
+  font-size: 11px;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    0.2s ease;
+}
+
+.tool-button:hover {
+  border-color:
+    rgba(130,94,222,0.18);
+
+  background:
+    rgba(105,67,198,0.09);
+
+  color: #e1ddec;
+}
+
+.tool-button:disabled {
+  cursor: default;
+}
+
+.tool-icon {
+  width: 21px;
+
+  color: #8171aa;
+
+  text-align: center;
+}
+
+/* =========================================================
+   CAPABILITIES
+   ========================================================= */
+
+.capability-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0;
+
+  color: #85858f;
+
+  font-size: 11px;
+}
+
+.capability-list div {
+  padding:
+    9px
+    2px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,0.045);
+}
+
+.capability-list div:last-child {
+  border-bottom: none;
+}
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background:
+    rgba(125,99,180,0.25);
+
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background:
+    rgba(145,111,220,0.4);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .eternity-app {
+    grid-template-columns:
+      215px
+      minmax(0, 1fr);
+  }
+
+  .left-sidebar {
+    width: 215px;
+  }
+
+  .right-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .eternity-app {
+    display: block;
+  }
+
+  .left-sidebar {
+    display: none;
+  }
+
+  .workspace {
+    width: 100vw;
+  }
+
+  .message-list {
+    width: 92%;
+  }
+
+  .composer-wrapper {
+    padding:
+      0
+      12px
+      13px;
+  }
+
+  .empty-state h1 {
+    font-size: 28px;
+  }
+
+  .empty-state p {
+    font-size: 12px;
+  }
+}
+
+/* =========================================================
+   ETERNITY COSMIC CORE — MOVING ANIMATION
+   ========================================================= */
+
+.cosmic-core {
+  position: relative;
+
+  width: 150px;
+  height: 150px;
+
+  margin: 0 auto 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  isolation: isolate;
+}
+
+/* Main purple/blue atmospheric glow */
+.energy-glow {
+  position: absolute;
+
+  width: 125px;
+  height: 125px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(115, 65, 255, 0.24) 0%,
+      rgba(67, 51, 190, 0.12) 35%,
+      transparent 70%
+    );
+
+  filter: blur(12px);
+
+  animation:
+    corePulse 4s ease-in-out infinite;
+}
+
+/* Black hole */
+.core-hole {
+  position: absolute;
+
+  width: 55px;
+  height: 55px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 45% 40%,
+      #080810 0%,
+      #010106 55%,
+      #000000 100%
+    );
+
+  border:
+    1px solid rgba(164, 125, 255, 0.45);
+
+  box-shadow:
+    0 0 18px rgba(114, 74, 235, 0.55),
+    0 0 45px rgba(83, 48, 190, 0.35),
+    inset 0 0 20px rgba(0,0,0,0.9);
+
+  z-index: 5;
+}
+
+/* E inside the black hole */
+.core-hole::after {
+  content: "E";
+
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #f5f1ff;
+
+  font-size: 17px;
+  font-weight: 400;
+
+  text-shadow:
+    0 0 12px rgba(210, 190, 255, 0.7);
+}
+
+/* Orbital rings */
+.core-ring {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 125px;
+  height: 48px;
+
+  border-radius: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  pointer-events: none;
+
+  border: 1px solid rgba(126, 83, 235, 0.65);
+
+  box-shadow:
+    0 0 12px rgba(105, 65, 220, 0.18);
+
+  transform-style: preserve-3d;
+}
+
+/* First orbit */
+.ring-one {
+  animation:
+    orbitOne 7s linear infinite;
+}
+
+/* Second orbit */
+.ring-two {
+  width: 135px;
+  height: 55px;
+
+  border-color:
+    rgba(67, 104, 235, 0.48);
+
+  animation:
+    orbitTwo 9s linear infinite;
+}
+
+/* Third orbit */
+.ring-three {
+  width: 115px;
+  height: 42px;
+
+  border-color:
+    rgba(170, 105, 255, 0.35);
+
+  animation:
+    orbitThree 6s linear infinite;
+}
+
+/* Small white orbiting light */
+.core-light {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 7px;
+  height: 7px;
+
+  margin-left: -3.5px;
+  margin-top: -3.5px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 7px #ffffff,
+    0 0 16px rgba(180, 150, 255, 0.95),
+    0 0 28px rgba(110, 80, 240, 0.7);
+
+  z-index: 8;
+
+  animation:
+    lightOrbit 5s linear infinite;
+}
+
+.light-two {
+  width: 4px;
+  height: 4px;
+
+  animation:
+    lightOrbitTwo 8s linear infinite;
+
+  box-shadow:
+    0 0 6px #ffffff,
+    0 0 14px rgba(110, 150, 255, 0.9);
+}
+
+
+/* =========================================================
+   CORE ANIMATIONS
+   ========================================================= */
+
+@keyframes corePulse {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes orbitOne {
+  from {
+    transform:
+      translate(-50%, -50%)
+      rotateX(65deg)
+      rotateZ(0deg);
+  }
+
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotateX(65deg)
+      rotateZ(360deg);
+  }
+}
+
+@keyframes orbitTwo {
+  from {
+    transform:
+      translate(-50%, -50%)
+      rotateX(65deg)
+      rotateY(25deg)
+      rotateZ(360deg);
+  }
+
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotateX(65deg)
+      rotateY(25deg)
+      rotateZ(0deg);
+  }
+}
+
+@keyframes orbitThree {
+  from {
+    transform:
+      translate(-50%, -50%)
+      rotateX(68deg)
+      rotateY(-30deg)
+      rotateZ(0deg);
+  }
+
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotateX(68deg)
+      rotateY(-30deg)
+      rotateZ(360deg);
+  }
+}
+
+@keyframes lightOrbit {
+  from {
+    transform:
+      rotate(0deg)
+      translateX(65px)
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      rotate(360deg)
+      translateX(65px)
+      rotate(-360deg);
+  }
+}
+
+@keyframes lightOrbitTwo {
+  from {
+    transform:
+      rotate(360deg)
+      translateX(52px);
+  }
+
+  to {
+    transform:
+      rotate(0deg)
+      translateX(52px);
+  }
+}
+
+
+/* =========================================================
+   REMOVE UNNECESSARY INITIAL GREETING
+   ========================================================= */
+
+/*
+   The first assistant message is the automatic:
+   "Hello. I am ETERNITY. How can I help you today?"
+
+   Hide it when it is the first item in the chat.
+   Once the user sends a message, the user's message becomes
+   the first item and normal assistant responses remain visible.
+*/
+
+.message-list > .chat-message:first-child.assistant-message {
+  display: none;
+}
+
+/* =========================
+   MARKDOWN CHAT FORMATTING
+   ========================= */
+
+.message-content {
+  line-height: 1.7;
+  word-wrap: break-word;
+}
+
+.message-content h1,
+.message-content h2,
+.message-content h3 {
+  margin: 18px 0 10px;
+  line-height: 1.3;
+}
+
+.message-content h1 {
+  font-size: 1.35rem;
+}
+
+.message-content h2 {
+  font-size: 1.15rem;
+}
+
+.message-content h3 {
+  font-size: 1rem;
+}
+
+.message-content p {
+  margin: 8px 0;
+}
+
+.message-content ul,
+.message-content ol {
+  margin: 10px 0;
+  padding-left: 25px;
+}
+
+.message-content li {
+  margin: 6px 0;
+  padding-left: 3px;
+}
+
+.message-content strong {
+  font-weight: 700;
+}
+
+.message-content code {
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-family: Consolas, monospace;
+  font-size: 0.9em;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.message-content pre {
+  overflow-x: auto;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.message-content pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.message-content blockquote {
+  margin: 12px 0;
+  padding-left: 14px;
+  border-left: 3px solid rgba(150, 100, 255, 0.7);
+  opacity: 0.9;
+}
+
+.message-content hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 18px 0;
+}
+
+.message-content a {
+  text-decoration: underline;
+}
+
+/* ================================
+   CHAT CONTENT ALIGNMENT FIX
+   ================================ */
+
+.chat-message {
+  text-align: left !important;
+}
+
+.user-message,
+.assistant-message {
+  text-align: left !important;
+}
+
+.message-body {
+  text-align: left !important;
+}
+
+.message-content {
+  display: block !important;
+  text-align: left !important;
+  color: #ffffff !important;
+  line-height: 1.7;
+}
+
+.message-content p {
+  text-align: left !important;
+  margin: 8px 0;
+}
+
+.message-content h1,
+.message-content h2,
+.message-content h3,
+.message-content h4 {
+  text-align: left !important;
+}
+
+.message-content ul,
+.message-content ol {
+  text-align: left !important;
+  padding-left: 28px;
+}
+
+.message-content li {
+  text-align: left !important;
+  margin: 6px 0;
+}
+
+.message-content pre,
+.message-content code {
+  text-align: left !important;
+}
+
+/* =========================================
+   ETERNITY CHAT WIDTH
+   ========================================= */
+
+.eternity-app {
+  grid-template-columns: 220px minmax(0, 1fr) 220px !important;
+}
+
+.left-sidebar {
+  width: 220px;
+}
+
+.right-sidebar {
+  width: 220px;
+}
+
+/* =========================================
+   CHAT TYPOGRAPHY
+   ========================================= */
+
+.message-content {
+  font-size: 17px !important;
+  line-height: 1.75 !important;
+  max-width: 900px;
+}
+
+.message-content p {
+  font-size: 17px !important;
+  line-height: 1.75 !important;
+  margin: 12px 0;
+}
+
+.message-content h1 {
+  font-size: 30px !important;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 24px 0 14px;
+}
+
+.message-content h2 {
+  font-size: 24px !important;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 22px 0 12px;
+}
+
+.message-content h3 {
+  font-size: 20px !important;
+  font-weight: 650;
+  line-height: 1.35;
+  margin: 18px 0 10px;
+}
+
+.message-content strong {
+  font-weight: 700;
+}
+
+.message-content ul,
+.message-content ol {
+  font-size: 17px !important;
+  line-height: 1.75 !important;
+  margin: 14px 0;
+  padding-left: 30px;
+}
+
+.message-content li {
+  margin: 8px 0;
+  padding-left: 4px;
+}
+
+/* =========================================
+   CODE BLOCKS
+   ========================================= */
+
+.code-block-wrapper {
+  margin: 18px 0;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(8, 8, 15, 0.95);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.code-block-header {
+  height: 38px;
+  padding: 0 12px 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.045);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.code-block-header span {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: lowercase;
+}
+
+.copy-code-button {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.75);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.copy-code-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.message-content pre {
+  margin: 0 !important;
+  overflow-x: auto;
+}
+
+.message-content pre code {
+  background: transparent !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+}
+
+.message-content code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 5px;
+  padding: 3px 6px;
+}
+
+/* =========================================================
+   FINAL ETERNITY CHAT FIX
+   ========================================================= */
+
+/* Better font */
+body {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* =========================================================
+   CHAT LEFT ALIGNMENT
+   ========================================================= */
+
+.message-list {
+  text-align: left !important;
+}
+
+.chat-message,
+.user-message,
+.assistant-message {
+  text-align: left !important;
+}
+
+.message-body {
+  text-align: left !important;
+}
+
+.message-content {
+  display: block !important;
+  width: 100%;
+  text-align: left !important;
+
+  font-size: 17px !important;
+  line-height: 1.75 !important;
+
+  color: #dce1f1 !important;
+
+  overflow-wrap: anywhere;
+}
+
+/* Paragraphs */
+
+.message-content p {
+  text-align: left !important;
+
+  font-size: 17px !important;
+  line-height: 1.75 !important;
+
+  margin: 12px 0;
+}
+
+/* Headings */
+
+.message-content h1,
+.message-content h2,
+.message-content h3,
+.message-content h4 {
+  text-align: left !important;
+
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+.message-content h1 {
+  font-size: 30px !important;
+  font-weight: 700;
+
+  margin: 24px 0 14px;
+}
+
+.message-content h2 {
+  font-size: 24px !important;
+  font-weight: 700;
+
+  margin: 22px 0 12px;
+}
+
+.message-content h3 {
+  font-size: 20px !important;
+  font-weight: 650;
+
+  margin: 18px 0 10px;
+}
+
+/* Lists */
+
+.message-content ul,
+.message-content ol {
+  text-align: left !important;
+
+  font-size: 17px !important;
+  line-height: 1.75 !important;
+
+  margin: 14px 0;
+
+  padding-left: 30px;
+}
+
+.message-content li {
+  text-align: left !important;
+
+  margin: 8px 0;
+  padding-left: 4px;
+}
+
+.message-content li::marker {
+  color: #9278ff;
+}
+
+/* Bold */
+
+.message-content strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* =========================================================
+   STATIC COSMIC BLACK HOLE
+   ========================================================= */
+
+.cosmic-core {
+  position: relative;
+
+  width: 150px;
+  height: 150px;
+
+  margin: 0 auto 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  isolation: isolate;
+}
+
+/* Purple / blue glow */
+
+.energy-glow {
+  position: absolute;
+
+  width: 125px;
+  height: 125px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(115, 65, 255, 0.24) 0%,
+      rgba(67, 51, 190, 0.12) 35%,
+      transparent 70%
+    );
+
+  filter: blur(12px);
+
+  /* NO MOVEMENT */
+  animation: none !important;
+}
+
+/* Black hole */
+
+.core-hole {
+  position: absolute;
+
+  width: 55px;
+  height: 55px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 45% 40%,
+      #080810 0%,
+      #010106 55%,
+      #000000 100%
+    );
+
+  border:
+    1px solid rgba(164, 125, 255, 0.45);
+
+  box-shadow:
+    0 0 18px rgba(114, 74, 235, 0.55),
+    0 0 45px rgba(83, 48, 190, 0.35),
+    inset 0 0 20px rgba(0,0,0,0.9);
+
+  z-index: 5;
+}
+
+/* E inside black hole */
+
+.core-hole::after {
+  content: "E";
+
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #f5f1ff;
+
+  font-size: 17px;
+  font-weight: 400;
+
+  text-shadow:
+    0 0 12px rgba(210, 190, 255, 0.7);
+}
+
+/* =========================================================
+   STATIC ORBITAL RINGS
+   ========================================================= */
+
+.core-ring {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 125px;
+  height: 48px;
+
+  border-radius: 50%;
+
+  transform:
+    translate(-50%, -50%)
+    rotateX(65deg);
+
+  pointer-events: none;
+
+  border:
+    1px solid rgba(126, 83, 235, 0.65);
+
+  box-shadow:
+    0 0 12px rgba(105, 65, 220, 0.18);
+
+  /* NO MOVEMENT */
+  animation: none !important;
+}
+
+.ring-one {
+  transform:
+    translate(-50%, -50%)
+    rotateX(65deg)
+    rotateZ(-18deg);
+}
+
+.ring-two {
+  width: 135px;
+  height: 55px;
+
+  border-color:
+    rgba(67, 104, 235, 0.48);
+
+  transform:
+    translate(-50%, -50%)
+    rotateX(65deg)
+    rotateY(25deg)
+    rotateZ(25deg);
+}
+
+.ring-three {
+  width: 115px;
+  height: 42px;
+
+  border-color:
+    rgba(170, 105, 255, 0.35);
+
+  transform:
+    translate(-50%, -50%)
+    rotateX(68deg)
+    rotateY(-30deg)
+    rotateZ(-12deg);
+}
+
+/* =========================================================
+   STATIC WHITE ORBIT LIGHTS
+   ========================================================= */
+
+.core-light {
+  position: absolute;
+
+  width: 7px;
+  height: 7px;
+
+  left: 50%;
+  top: 50%;
+
+  margin-left: 54px;
+  margin-top: -21px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 7px #ffffff,
+    0 0 16px rgba(180, 150, 255, 0.95),
+    0 0 28px rgba(110, 80, 240, 0.7);
+
+  z-index: 8;
+
+  /* NO MOVEMENT */
+  animation: none !important;
+}
+
+.light-two {
+  width: 4px;
+  height: 4px;
+
+  left: 50%;
+  top: 50%;
+
+  margin-left: -45px;
+  margin-top: 25px;
+
+  box-shadow:
+    0 0 6px #ffffff,
+    0 0 14px rgba(110, 150, 255, 0.9);
+
+  animation: none !important;
+}
+
+/* =========================================================
+   RESTORE MOVING COSMIC ORBITS
+   ========================================================= */
+
+/* Glow slowly breathes */
+.energy-glow {
+  animation: corePulse 4s ease-in-out infinite !important;
+}
+
+/* Orbit rings move */
+.core-ring {
+  animation-duration: initial;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.ring-one {
+  animation: orbitOne 7s linear infinite !important;
+}
+
+.ring-two {
+  animation: orbitTwo 9s linear infinite !important;
+}
+
+.ring-three {
+  animation: orbitThree 6s linear infinite !important;
+}
+
+/* White lights orbit */
+.core-light {
+  animation: lightOrbit 7s linear infinite !important;
+}
+
+.light-two {
+  animation: lightOrbitTwo 9s linear infinite !important;
+}
